@@ -12,12 +12,14 @@ import javax.persistence.*;
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
-    private String phone;
+    private String numberPhone;
 
     @ManyToOne
     @JoinColumn(name = "tariff_id")
     private Tariff tariff;
+
+    private long balance;
 
 }
