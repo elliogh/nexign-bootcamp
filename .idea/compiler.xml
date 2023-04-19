@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
+        <module name="hrs-service" />
         <module name="cdr-generator-service" />
         <module name="eureka-server" />
         <module name="crm-service" />
@@ -20,6 +21,7 @@
       <module name="cdr-generator-service" target="11" />
       <module name="crm-service" target="11" />
       <module name="eureka-server" target="11" />
+      <module name="hrs-service" target="11" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
@@ -29,6 +31,7 @@
       <module name="cdr-generator-service" options="-parameters" />
       <module name="crm-service" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
+      <module name="hrs-service" options="-parameters" />
     </option>
   </component>
 </project>

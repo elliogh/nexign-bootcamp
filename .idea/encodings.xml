@@ -6,5 +6,6 @@
     <file url="file://$PROJECT_DIR$/cdr-generator-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/crm-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/eureka-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/hrs-service/src/main/java" charset="UTF-8" />
   </component>
 </project>
