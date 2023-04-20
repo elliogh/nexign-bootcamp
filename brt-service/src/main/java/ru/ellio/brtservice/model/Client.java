@@ -3,10 +3,13 @@ package ru.ellio.brtservice.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Entity
 @Table(name = "client")
 public class Client {
@@ -22,4 +25,10 @@ public class Client {
 
     private long balance;
 
+    @OneToMany
+    private List<Operation> payload;
+
+    private double totalCost;
+
+    private String monetaryUnit;
 }

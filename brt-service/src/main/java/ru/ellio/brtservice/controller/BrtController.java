@@ -15,7 +15,8 @@ public class BrtController {
     }
 
     @GetMapping
-    public String init() {
-        return clientService.findAllBy().toString();
+    public String init() throws Exception {
+        clientService.report("");
+        return "clientService.report().toString()";
     }
 }

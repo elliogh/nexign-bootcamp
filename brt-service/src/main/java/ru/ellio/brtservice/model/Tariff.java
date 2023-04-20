@@ -14,6 +14,8 @@ public class Tariff {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private String tariffId;
+
     private String name;
 
 }

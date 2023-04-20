@@ -5,8 +5,9 @@ import org.springframework.stereotype.Repository;
 import ru.ellio.brtservice.model.Client;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
-    List<Client> findAllBy();
+    Optional<Client> findClientByNumberPhone(String numberPhone);
 }
