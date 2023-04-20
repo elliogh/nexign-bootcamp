@@ -1,5 +1,5 @@
 INSERT INTO tariff(id, name, tariff_id)
-VALUES (1, 'Безлимит 300', '05'),
+VALUES (1, 'Безлимит 300', '06'),
        (2, 'Поминутный', '03'),
        (3, 'Обычный', '11');
 INSERT INTO client(balance, monetary_unit, number_phone, total_cost, tariff_id)

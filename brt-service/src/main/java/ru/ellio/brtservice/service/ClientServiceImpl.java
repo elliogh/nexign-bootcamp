@@ -19,13 +19,12 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public void addMoney(String numberPhone, long money) {
-        clientRepository
+    public void addMoney(String numberPhone, double money) throws Exception {
+        Client client = clientRepository
                 .findClientByNumberPhone(numberPhone)
-                .ifPresent(user -> {
-                    user.setBalance(user.getBalance() + money);
-                    clientRepository.save(user);
-                });
+                .orElseThrow(() -> new Exception("Такого абонента нет"));
+        client.setBalance(client.getBalance() + money);
+        clientRepository.save(client);
     }
 
     @Override
@@ -56,6 +55,7 @@ public class ClientServiceImpl implements ClientService {
                 .numberPhone(numberPhone)
                 .tariff(tariff)
                 .balance(balance)
+                .monetaryUnit("rubles")
                 .build();
         clientRepository.save(client);
     }
