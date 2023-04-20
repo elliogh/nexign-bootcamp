@@ -26,5 +26,5 @@ public class Operation {
 
     private LocalTime duration;
 
-    private long cost;
+    private double cost;
 }

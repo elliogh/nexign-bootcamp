@@ -23,7 +23,7 @@ public class Client {
     @JoinColumn(name = "tariff_id")
     private Tariff tariff;
 
-    private long balance;
+    private double balance;
 
     @OneToMany
     private List<Operation> payload;

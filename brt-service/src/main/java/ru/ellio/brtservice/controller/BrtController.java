@@ -16,7 +16,7 @@ public class BrtController {
 
     @GetMapping
     public String init() throws Exception {
-        clientService.report("");
+        clientService.addMoney("73734435247", 123);
         return "clientService.report().toString()";
     }
 }
