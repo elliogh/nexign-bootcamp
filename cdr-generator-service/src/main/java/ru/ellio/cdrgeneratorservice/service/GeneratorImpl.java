@@ -80,10 +80,16 @@ public class GeneratorImpl implements Generator {
      * @return список телефонных номеров
      */
     private List<String> generatePhoneNumbers() {
-        long phoneNumber = 73734435243L;
+        Random random = new Random();
+        String phoneNumber;
         List<String> phones = new ArrayList<>();
         for (int i = 0; i < amountPhones; i++) {
-            phones.add(String.valueOf(phoneNumber + (long) i * i));
+            // генерация префикса
+            int prefix = 900 + random.nextInt(100);
+            // генерация 7 цифр номера телефона
+            int number = 1000000 + random.nextInt(9000000);
+            phoneNumber = "7" + prefix + number;
+            phones.add(String.valueOf(phoneNumber));
         }
         return phones;
     }
