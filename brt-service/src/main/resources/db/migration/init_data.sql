@@ -1,7 +1,7 @@
-INSERT INTO tariff(id, name, tariff_id)
-VALUES (1, 'Безлимит 300', '06'),
-       (2, 'Поминутный', '03'),
-       (3, 'Обычный', '11');
+INSERT INTO tariff(id, name, tariff_id, price, default_minute_price, tariff_minute_price, minutes_left, incoming_free)
+VALUES (1, 'Безлимит 300', '06', 100, 1, 0, 300, false),
+       (2, 'Поминутный', '03', 0, 1.5, 0, 0, false),
+       (3, 'Обычный', '11', 0, 1.5, 0.5, 100, true);
 INSERT INTO client(balance, monetary_unit, number_phone, total_cost, tariff_id)
 VALUES (100.0, 'rubles', '73734435247', 0, 3),
 

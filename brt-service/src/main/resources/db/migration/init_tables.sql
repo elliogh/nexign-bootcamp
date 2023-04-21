@@ -6,7 +6,12 @@ DROP TABLE IF EXISTS tariff;
 CREATE TABLE tariff(
     id  BIGSERIAL PRIMARY KEY NOT NULL,
     tariff_id   VARCHAR(32) NOT NULL,
-    name    VARCHAR(32) NOT NULL
+    name    VARCHAR(32) NOT NULL,
+    price DOUBLE PRECISION NOT NULL,
+    default_minute_price  DOUBLE PRECISION NOT NULL,
+    tariff_minute_price   DOUBLE PRECISION NOT NULL,
+    minutes_left    INT NOT NULL,
+    incoming_free   BOOLEAN NOT NULL
 );
 
 CREATE TABLE client(
@@ -23,7 +28,7 @@ CREATE TABLE operation(
     call_type   VARCHAR(32) NOT NULL,
     start_time  TIMESTAMP NOT NULL,
     end_time  TIMESTAMP NOT NULL,
-    duration    TIME NOT NULL,
+    duration    BIGINT NOT NULL,
     cost    DOUBLE PRECISION NOT NULL
 );
 

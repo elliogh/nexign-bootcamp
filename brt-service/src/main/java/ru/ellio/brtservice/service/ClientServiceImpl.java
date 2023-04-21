@@ -1,12 +1,17 @@
 package ru.ellio.brtservice.service;
 
 import org.springframework.stereotype.Service;
+import ru.ellio.brtservice.response.BillingResponse;
 import ru.ellio.brtservice.model.Client;
+import ru.ellio.brtservice.model.Operation;
 import ru.ellio.brtservice.model.Tariff;
 import ru.ellio.brtservice.repository.ClientRepository;
 import ru.ellio.brtservice.repository.TariffRepository;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -61,7 +66,54 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<Client> billing() {
-        return clientRepository.findAll();
+    public void billing(List<BillingResponse> billingResponses) {
+
+        Map<String, List<Operation>> phonesWithOperations = new HashMap<>(); // Мапа телефон -> операции
+
+        // Каждый response кладем в мапу
+        billingResponses.stream().forEach(response -> {
+            if (!phonesWithOperations.containsKey(response.getNumberPhone())) {
+                phonesWithOperations.put(response.getNumberPhone(), new ArrayList<>());
+            }
+
+            phonesWithOperations.get(response.getNumberPhone())
+                    .add(makeOperation(response));
+        });
+
+        List<Client> clients = clientRepository.findAll(); // все клиенты
+        clear(clients);
+
+        // Для каждого клиента, если он есть в billingResponses
+        clients.stream().forEach(client -> {
+            client.setPayload(new ArrayList<>());
+            if (phonesWithOperations.containsKey(client.getNumberPhone())) {
+                client.getPayload().addAll(phonesWithOperations.get(client.getNumberPhone())); // добавляем операции с их стоимостями
+                client.setTotalCost(calculateTotalCost(client));                               // считаем и устонавливаем полную стоимость за период
+                client.setBalance(client.getBalance() - client.getTotalCost());                // меняем баланс
+            }
+        });
+
+        clientRepository.saveAll(clients); // сохраняем пользователей с операциями
+    }
+
+    private Operation makeOperation(BillingResponse response) {
+        return Operation.builder()
+                .callType(response.getCallType())
+                .startTime(response.getStartTime())
+                .endTime(response.getEndTime())
+                .duration(response.getDuration())
+                .cost(response.getCost())
+                .build();
+    }
+
+    private double calculateTotalCost(Client client) {
+        return client.getPayload().stream()
+                .mapToDouble(Operation::getCost)
+                .sum() + client.getTariff().getPrice();
+    }
+
+    private void clear(List<Client> clients) {
+        clients.forEach(client -> client.setPayload(new ArrayList<>()));
+        clientRepository.saveAll(clients);
     }
 }

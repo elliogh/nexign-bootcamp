@@ -1,16 +1,17 @@
 package ru.ellio.brtservice.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 @Entity
 @Table(name = "operation")
 public class Operation {
@@ -24,7 +25,7 @@ public class Operation {
 
     private LocalDateTime endTime;
 
-    private LocalTime duration;
+    private Duration duration;
 
     private double cost;
 }

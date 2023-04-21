@@ -28,7 +28,7 @@ public class GeneratorImpl implements Generator {
      * @return файл
      */
     @Override
-    public String generate() {
+    public File generate() {
         final List<String> possibleTypes = List.of("01", "02");
         final List<String> possiblePhoneNumbers = generatePhoneNumbers();
         createDirectory(directoryPath);
@@ -71,7 +71,7 @@ public class GeneratorImpl implements Generator {
             e.printStackTrace();
         }
 
-        return cdr.toString();
+        return new File(String.format("%s/random_cdr%s", directoryPath, reportFormat));
     }
 
     /**

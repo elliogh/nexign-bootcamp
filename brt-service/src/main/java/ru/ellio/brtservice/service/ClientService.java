@@ -1,6 +1,7 @@
 package ru.ellio.brtservice.service;
 
 
+import ru.ellio.brtservice.response.BillingResponse;
 import ru.ellio.brtservice.model.Client;
 
 import java.util.List;
@@ -12,5 +13,5 @@ public interface ClientService {
      void changeTariff(String numberPhone, String tariffId) throws Exception;
      void createClient(String numberPhone, String tariffId, long balance) throws Exception;
 
-     List<Client> billing();
+     void billing(List<BillingResponse> billingResponses);
 }

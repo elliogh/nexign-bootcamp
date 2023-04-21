@@ -18,4 +18,14 @@ public class Tariff {
 
     private String name;
 
+    private double price;
+
+    private double defaultMinutePrice;
+
+    private double tariffMinutePrice;
+
+    private int minutesLeft;
+
+    private boolean incomingFree;
+
 }

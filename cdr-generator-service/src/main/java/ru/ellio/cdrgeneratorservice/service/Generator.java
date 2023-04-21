@@ -1,5 +1,7 @@
 package ru.ellio.cdrgeneratorservice.service;
 
+import java.io.File;
+
 public interface Generator {
-    String generate();
+    File generate();
 }

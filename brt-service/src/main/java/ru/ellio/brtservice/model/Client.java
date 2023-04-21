@@ -1,6 +1,7 @@
 package ru.ellio.brtservice.model;
 
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.List;
@@ -25,8 +26,8 @@ public class Client {
 
     private double balance;
 
-    @OneToMany
-    private List<Operation> payload;
+    @OneToMany(cascade = {CascadeType.ALL})
+    private List<Operation> payload = new java.util.ArrayList<>();
 
     private double totalCost;
 
