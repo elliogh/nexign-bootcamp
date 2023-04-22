@@ -31,11 +31,11 @@ public class BrtServiceApplication {
 
     @EventListener(ApplicationReadyEvent.class)
     public void runAfterStartup() {
-        List<BillingDto> result = null;
+        BillingDto result = null;
         while (result == null) {
             try {
                 Thread.sleep(4000);
-                result = brtController.billing(new BillingRequest("run"));
+                result = brtController.billing();
             } catch (Exception ignored) {}
         }
     }

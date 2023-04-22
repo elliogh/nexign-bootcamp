@@ -5,7 +5,6 @@ import ru.ellio.brtservice.dto.*;
 import ru.ellio.brtservice.model.Client;
 import ru.ellio.brtservice.model.Operation;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -57,8 +56,8 @@ public class Mapper {
                 .build();
     }
 
-    public BillingDto toBillingDto(Client client) {
-        return BillingDto.builder()
+    public ClientBalanceDto toClientBalanceDto(Client client) {
+        return ClientBalanceDto.builder()
                 .numberPhone(client.getNumberPhone())
                 .balance(client.getBalance())
                 .build();

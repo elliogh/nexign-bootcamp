@@ -16,5 +16,5 @@ public interface ClientService {
      ClientTariffDto changeTariff(ChangeTariffRequest changeTariffRequest) throws Exception;
      ClientDto createClient(CreateClientRequest createClientRequest) throws Exception;
 
-     List<BillingDto> billing(List<BillingResponse> billingResponses);
+     BillingDto billing(List<BillingResponse> billingResponses);
 }

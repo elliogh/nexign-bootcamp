@@ -54,8 +54,9 @@ public class BrtController {
     }
 
     @PatchMapping(value = "/billing", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public List<BillingDto> billing(
-            @RequestBody BillingRequest billingRequest) throws IOException {
+    public BillingDto billing(
+            ) throws IOException {
+//        System.out.println(billingRequest);
         Resource resource = cdrClient.random();
         generatorService.generateCdrPlus(resource);
         List<BillingResponse> billingResponse = hrsClient.calculateCost();

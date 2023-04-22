@@ -73,7 +73,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
-    public List<BillingDto> billing(List<BillingResponse> billingResponses) {
+    public BillingDto billing(List<BillingResponse> billingResponses) {
 
         Map<String, List<Operation>> phonesWithOperations = new HashMap<>(); // Мапа телефон -> операции
 
@@ -102,10 +102,13 @@ public class ClientServiceImpl implements ClientService {
 
         clientRepository.saveAll(clients); // сохраняем пользователей с операциями
 
-        return clients.stream()
-                .filter(client -> phonesWithOperations.containsKey(client.getNumberPhone()))
-                .map(client ->  mapper.toBillingDto(client))
-                .collect(Collectors.toList());
+        return BillingDto.builder()
+                        .numbers(clients.stream()
+                                .filter(client -> phonesWithOperations.containsKey(client.getNumberPhone()))
+                                .map(client ->  mapper.toClientBalanceDto(client))
+                                .collect(Collectors.toList())
+                        ).build();
+
     }
 
     private Operation makeOperation(BillingResponse response) {
