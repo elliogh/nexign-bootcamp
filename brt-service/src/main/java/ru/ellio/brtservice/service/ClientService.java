@@ -10,7 +10,6 @@ import ru.ellio.brtservice.response.BillingResponse;
 import java.util.List;
 
 public interface ClientService {
-//     List<Client> findAllBy();
      MoneyDto addMoney(PayRequest payRequest) throws Exception;
      ReportDto report(String numberPhone) throws Exception;
      ClientTariffDto changeTariff(ChangeTariffRequest changeTariffRequest) throws Exception;

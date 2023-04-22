@@ -7,6 +7,9 @@ import lombok.Getter;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+/**
+ * Ответ от HRS c посчитанной стоимостью звонка.
+ */
 @Getter
 @Data
 @AllArgsConstructor

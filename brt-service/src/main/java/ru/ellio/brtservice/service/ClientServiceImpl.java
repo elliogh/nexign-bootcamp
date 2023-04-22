@@ -13,12 +13,16 @@ import ru.ellio.brtservice.model.Tariff;
 import ru.ellio.brtservice.repository.ClientRepository;
 import ru.ellio.brtservice.repository.TariffRepository;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Сервис для работы с абонентами.
+ */
 @AllArgsConstructor
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -26,6 +30,13 @@ public class ClientServiceImpl implements ClientService {
     TariffRepository tariffRepository;
     Mapper mapper;
 
+    /**
+     * Метод, который пополняет баланс.
+     *
+     * @param payRequest запрос на пополенние баланса
+     * @return ответ на пополнение баланса
+     * @throws Exception абонент не найден
+     */
     @Override
     public MoneyDto addMoney(PayRequest payRequest) throws Exception {
         Client client = clientRepository
@@ -36,6 +47,13 @@ public class ClientServiceImpl implements ClientService {
         return mapper.toMoneyDto(client);
     }
 
+    /**
+     * Метод, который генерирует отчет.
+     *
+     * @param numberPhone номер телефона абонента
+     * @return отчет
+     * @throws Exception абонент не найден
+     */
     @Override
     public ReportDto report(String numberPhone) throws Exception {
         Client client = clientRepository
@@ -44,6 +62,13 @@ public class ClientServiceImpl implements ClientService {
         return mapper.toReportDto(client);
     }
 
+    /**
+     * Метод, который изменяет тариф.
+     *
+     * @param changeTariffRequest запрос на смену тарифа абонента
+     * @return ответ на смену тарифа
+     * @throws Exception тариф не найден, абонент не найден
+     */
     @Override
     public ClientTariffDto changeTariff(ChangeTariffRequest changeTariffRequest) throws Exception {
         Tariff tariff = tariffRepository
@@ -57,6 +82,13 @@ public class ClientServiceImpl implements ClientService {
         return mapper.toClientTariffDto(client);
     }
 
+    /**
+     * Метод, который создает нового клиента.
+     *
+     * @param createClientRequest запрос на создание нового абонента.
+     * @return ответ на созадние нового абонента
+     * @throws Exception абонент с таким телефоном существует, тариф не найден
+     */
     @Override
     public ClientDto createClient(CreateClientRequest createClientRequest) throws Exception {
         boolean isClient = clientRepository.findClientByNumberPhone(createClientRequest.getNumberPhone()).isPresent();
@@ -74,6 +106,12 @@ public class ClientServiceImpl implements ClientService {
         return mapper.toClientDto(client);
     }
 
+    /**
+     * Метод, который осуществляет тарификацию.
+     *
+     * @return ответ на выполнение тарификации
+     * @throws IOException ошибка генерации файла
+     */
     @Override
     public BillingDto billing(List<BillingResponse> billingResponses) {
 
@@ -113,6 +151,7 @@ public class ClientServiceImpl implements ClientService {
 
     }
 
+    // Билдер новой операции
     private Operation makeOperation(BillingResponse response) {
         return Operation.builder()
                 .callType(response.getCallType())
@@ -123,12 +162,14 @@ public class ClientServiceImpl implements ClientService {
                 .build();
     }
 
+    // Считалка полной стоимости
     private double calculateTotalCost(Client client) {
         return client.getPayload().stream()
                 .mapToDouble(Operation::getCost)
                 .sum() + client.getTariff().getPrice();
     }
 
+    // Очистка бд на каждом перед каждой тарификацией
     private void clear(List<Client> clients) {
         clients.forEach(client -> {
             client.setPayload(new ArrayList<>());

@@ -9,6 +9,9 @@ import ru.ellio.crmservice.json.DurationSerializer;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+/**
+ * DTO для представления операции.
+ */
 @Data
 @Builder
 public class OperationDto {

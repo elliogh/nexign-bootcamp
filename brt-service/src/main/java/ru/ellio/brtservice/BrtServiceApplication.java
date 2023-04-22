@@ -29,6 +29,7 @@ public class BrtServiceApplication {
         SpringApplication.run(BrtServiceApplication.class, args);
     }
 
+    // Выполнение тарификации при запуске приложения
     @EventListener(ApplicationReadyEvent.class)
     public void runAfterStartup() {
         BillingDto result = null;

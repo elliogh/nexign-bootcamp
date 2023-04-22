@@ -7,6 +7,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * DTO для ответа на генерацию отчета.
+ */
 @Data
 @Builder
 public class ReportDto {

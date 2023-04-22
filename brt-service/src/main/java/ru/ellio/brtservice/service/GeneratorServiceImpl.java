@@ -14,11 +14,20 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Сервис для генерации CDR+ с тарифом.
+ */
 @Service
 @AllArgsConstructor
 public class GeneratorServiceImpl implements GeneratorService {
     ClientRepository clientRepository;
 
+    /**
+     * Метод, который генерирует CDR+ на основе CDR.
+     * @param resource CDR
+     * @return CDR+
+     * @throws IOException проблемы с файлом
+     */
     public File generateCdrPlus(Resource resource) throws IOException {
         createDirectory("cdrPlus");
 
@@ -51,6 +60,11 @@ public class GeneratorServiceImpl implements GeneratorService {
         return new File(String.format("%s/cdrPlus%s", "cdrPlus", ".txt"));
     }
 
+    /**
+     * Метод, который созадет директорию.
+     *
+     * @param directoryPath путь к директории
+     */
     private void createDirectory(String directoryPath) {
         File directory = new File(directoryPath);
         if (!directory.exists()) {
@@ -58,6 +72,7 @@ public class GeneratorServiceImpl implements GeneratorService {
         }
     }
 
+    // Преобразователь файла в массив
     private String[] cdrToArray(Resource resource) throws IOException {
         InputStream inputStream = resource.getInputStream();
         return new BufferedReader(new InputStreamReader(inputStream))
@@ -65,6 +80,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                 .split("\n");
     }
 
+    // Добавлялка тарифа
     private String appendTariff(Tariff tariff) {
         return new StringBuilder().append(",").append(tariff.getTariffId())
                 .append(",").append(tariff.getPrice())

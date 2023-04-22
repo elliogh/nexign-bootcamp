@@ -19,6 +19,12 @@ public class HrsController {
     BrtClient brtClient;
     CostService costService;
 
+    /**
+     * Endpoint для рассчета цены звонка.
+     *
+     * @return список операций с посчитанной ценой
+     * @throws IOException ошибка чтения файла
+     */
     @GetMapping("/calculateCost")
     public List<BillingResponse> calculateCost() throws IOException {
         Resource resource = brtClient.cdrPlus();

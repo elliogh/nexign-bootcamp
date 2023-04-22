@@ -7,6 +7,9 @@ import lombok.Data;
 
 import java.util.List;
 
+/**
+ * DTO для ответа на тарификацию - список абонентов с их балансом.
+ */
 @Data
 @Builder
 public class BillingDto {

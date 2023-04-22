@@ -13,6 +13,9 @@ import ru.ellio.crmservice.request.PayRequest;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Клиент для обращений к brt-service.
+ */
 @Headers("Cache-Control: no-cache")
 @FeignClient(name = "brt")
 public interface BrtClient {

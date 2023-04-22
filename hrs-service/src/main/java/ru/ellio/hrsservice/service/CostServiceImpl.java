@@ -17,6 +17,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class CostServiceImpl implements CostService {
+
+    /**
+     * Метод, который расчитывает стоимость звонка исходя из тарифа.
+     *
+     * @param resource CDR+
+     * @return список операций с посчитанной ценой
+     * @throws IOException IOException ошибка чтения файла
+     */
     public List<BillingResponse> calculateCost(Resource resource) throws IOException {
         String[] cdrPlus = cdrToArray(resource);
 
@@ -61,6 +69,7 @@ public class CostServiceImpl implements CostService {
         return responses;
     }
 
+    // Преобразователь файла в массив
     private String[] cdrToArray(Resource resource) throws IOException {
         InputStream inputStream = resource.getInputStream();
         return new BufferedReader(new InputStreamReader(inputStream))
@@ -68,6 +77,12 @@ public class CostServiceImpl implements CostService {
                 .split("\n");
     }
 
+    /**
+     * Метод, который создает мапу номер телефона -> операции из CDR+.
+     *
+     * @param cdrPlus CDR+
+     * @return мапа номер телефона -> операции
+     */
     private Map<String, List<Operation>> makeClientsWithOperationsFromCdr(String[] cdrPlus) {
         Map<String, List<Operation>> clientsWithOperations = new HashMap<>();
 

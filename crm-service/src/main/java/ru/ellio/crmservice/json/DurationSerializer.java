@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 import java.time.Duration;
 
+/**
+ * Сериализатор JSON для продолжительности звонка.
+ */
 public class DurationSerializer extends JsonSerializer<Duration> {
     @Override
     public void serialize(Duration duration, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {

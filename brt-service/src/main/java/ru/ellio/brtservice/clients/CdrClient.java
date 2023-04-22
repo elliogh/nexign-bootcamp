@@ -5,9 +5,13 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * Клиент для обращений к cdr-generator-service.
+ */
 @Headers("Cache-Control: no-cache")
 @FeignClient(name = "cdr-generator")
 public interface CdrClient {
+
     @GetMapping("/cdr/random")
     Resource random();
 }

@@ -3,6 +3,9 @@ package ru.ellio.brtservice.dto;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * DTO для ответа на изменение тарифа.
+ */
 @Data
 @Builder
 public class ClientTariffDto {

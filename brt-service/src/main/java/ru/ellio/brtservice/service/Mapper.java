@@ -7,6 +7,9 @@ import ru.ellio.brtservice.model.Operation;
 
 import java.util.stream.Collectors;
 
+/**
+ * Класс для маппинга Entity в DTO.
+ */
 @Component
 public class Mapper {
     public MoneyDto toMoneyDto(Client client) {

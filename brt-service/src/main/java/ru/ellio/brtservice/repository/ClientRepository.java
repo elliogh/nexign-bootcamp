@@ -7,6 +7,9 @@ import ru.ellio.brtservice.model.Client;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Интерфейс репозитория клиентов.
+ */
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
     Optional<Client> findClientByNumberPhone(String numberPhone);
