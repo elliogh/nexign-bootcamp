@@ -59,6 +59,8 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientDto createClient(CreateClientRequest createClientRequest) throws Exception {
+        boolean isClient = clientRepository.findClientByNumberPhone(createClientRequest.getNumberPhone()).isPresent();
+        if (isClient) throw new Exception("Абонент с таким телефоном существует");
         Tariff tariff = tariffRepository
                 .findAllByTariffId(createClientRequest.getTariff_id())
                 .orElseThrow(() -> new Exception("Такого тарифа нет"));
