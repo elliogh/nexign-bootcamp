@@ -3,13 +3,11 @@ package ru.ellio.brtservice.controller;
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.core.io.Resource;
 import ru.ellio.brtservice.clients.CdrClient;
 import ru.ellio.brtservice.clients.HrsClient;
 import ru.ellio.brtservice.dto.*;
-import ru.ellio.brtservice.request.BillingRequest;
 import ru.ellio.brtservice.request.ChangeTariffRequest;
 import ru.ellio.brtservice.request.CreateClientRequest;
 import ru.ellio.brtservice.request.PayRequest;
@@ -56,7 +54,6 @@ public class BrtController {
     @PatchMapping(value = "/billing", consumes = MediaType.APPLICATION_JSON_VALUE)
     public BillingDto billing(
             ) throws IOException {
-//        System.out.println(billingRequest);
         Resource resource = cdrClient.random();
         generatorService.generateCdrPlus(resource);
         List<BillingResponse> billingResponse = hrsClient.calculateCost();

@@ -1,26 +1,30 @@
 package ru.ellio.crmservice.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+import ru.ellio.crmservice.clients.BrtClient;
+import ru.ellio.crmservice.dto.MoneyDto;
+import ru.ellio.crmservice.dto.ReportDto;
+import ru.ellio.crmservice.request.PayRequest;
 
 @RestController
 @RequestMapping("/abonent")
+@AllArgsConstructor
 public class AbonentController {
-    @Autowired
     BrtClient brtClient;
 
-    @GetMapping("/pay")
-    public String pay() {
-        brtClient.pay();
-        return "";
+    @PatchMapping(value = "/pay", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public MoneyDto pay(
+            @RequestBody PayRequest payRequest) throws Exception {
+        return brtClient.pay(payRequest);
     }
 
-    @GetMapping("/report")
-    public String report() {
-        return "";
+    @GetMapping("report/{numberPhone}")
+    public ReportDto report(
+            @PathVariable String numberPhone) throws Exception {
+        return brtClient.report(numberPhone);
     }
 
 }
