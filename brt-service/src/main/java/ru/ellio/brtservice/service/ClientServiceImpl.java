@@ -1,6 +1,11 @@
 package ru.ellio.brtservice.service;
 
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.ellio.brtservice.dto.*;
+import ru.ellio.brtservice.request.ChangeTariffRequest;
+import ru.ellio.brtservice.request.CreateClientRequest;
+import ru.ellio.brtservice.request.PayRequest;
 import ru.ellio.brtservice.response.BillingResponse;
 import ru.ellio.brtservice.model.Client;
 import ru.ellio.brtservice.model.Operation;
@@ -12,61 +17,63 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+@AllArgsConstructor
 @Service
 public class ClientServiceImpl implements ClientService {
     ClientRepository clientRepository;
     TariffRepository tariffRepository;
+    Mapper mapper;
 
-    public ClientServiceImpl(ClientRepository clientRepository, TariffRepository tariffRepository) {
-        this.clientRepository = clientRepository;
-        this.tariffRepository = tariffRepository;
+    @Override
+    public MoneyDto addMoney(PayRequest payRequest) throws Exception {
+        Client client = clientRepository
+                .findClientByNumberPhone(payRequest.getNumberPhone())
+                .orElseThrow(() -> new Exception("Такого абонента нет"));
+        client.setBalance(client.getBalance() + payRequest.getMoney());
+        clientRepository.save(client);
+        return mapper.toMoneyDto(client);
     }
 
     @Override
-    public void addMoney(String numberPhone, double money) throws Exception {
+    public ReportDto report(String numberPhone) throws Exception {
         Client client = clientRepository
                 .findClientByNumberPhone(numberPhone)
                 .orElseThrow(() -> new Exception("Такого абонента нет"));
-        client.setBalance(client.getBalance() + money);
-        clientRepository.save(client);
+        return mapper.toReportDto(client);
     }
 
     @Override
-    public Client report(String numberPhone) throws Exception {
-        return clientRepository
-                .findClientByNumberPhone(numberPhone)
-                .orElseThrow(() -> new Exception("Такого абонента нет"));
-    }
-
-    @Override
-    public void changeTariff(String numberPhone, String tariffId) throws Exception {
+    public ClientTariffDto changeTariff(ChangeTariffRequest changeTariffRequest) throws Exception {
         Tariff tariff = tariffRepository
-                .findAllByTariffId(tariffId)
+                .findAllByTariffId(changeTariffRequest.getTariff_id())
                 .orElseThrow(() -> new Exception("Такого тарифа нет"));
         Client client = clientRepository
-                .findClientByNumberPhone(numberPhone)
+                .findClientByNumberPhone(changeTariffRequest.getNumberPhone())
                 .orElseThrow(() -> new Exception("Такого абонента нет"));
         client.setTariff(tariff);
         clientRepository.save(client);
+        return mapper.toClientTariffDto(client);
     }
 
     @Override
-    public void createClient(String numberPhone, String tariffId, long balance) throws Exception {
+    public ClientDto createClient(CreateClientRequest createClientRequest) throws Exception {
         Tariff tariff = tariffRepository
-                .findAllByTariffId(tariffId)
+                .findAllByTariffId(createClientRequest.getTariff_id())
                 .orElseThrow(() -> new Exception("Такого тарифа нет"));
         Client client = Client.builder()
-                .numberPhone(numberPhone)
+                .numberPhone(createClientRequest.getNumberPhone())
                 .tariff(tariff)
-                .balance(balance)
+                .balance(createClientRequest.getBalance())
                 .monetaryUnit("rubles")
                 .build();
         clientRepository.save(client);
+        return mapper.toClientDto(client);
     }
 
     @Override
-    public void billing(List<BillingResponse> billingResponses) {
+    public List<BillingDto> billing(List<BillingResponse> billingResponses) {
 
         Map<String, List<Operation>> phonesWithOperations = new HashMap<>(); // Мапа телефон -> операции
 
@@ -94,6 +101,11 @@ public class ClientServiceImpl implements ClientService {
         });
 
         clientRepository.saveAll(clients); // сохраняем пользователей с операциями
+
+        return clients.stream()
+                .filter(client -> phonesWithOperations.containsKey(client.getNumberPhone()))
+                .map(client ->  mapper.toBillingDto(client))
+                .collect(Collectors.toList());
     }
 
     private Operation makeOperation(BillingResponse response) {

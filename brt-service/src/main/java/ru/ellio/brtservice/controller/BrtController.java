@@ -2,10 +2,17 @@ package ru.ellio.brtservice.controller;
 
 import lombok.AllArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.core.io.Resource;
 import ru.ellio.brtservice.clients.CdrClient;
 import ru.ellio.brtservice.clients.HrsClient;
+import ru.ellio.brtservice.dto.*;
+import ru.ellio.brtservice.request.BillingRequest;
+import ru.ellio.brtservice.request.ChangeTariffRequest;
+import ru.ellio.brtservice.request.CreateClientRequest;
+import ru.ellio.brtservice.request.PayRequest;
 import ru.ellio.brtservice.response.BillingResponse;
 import ru.ellio.brtservice.service.ClientService;
 import ru.ellio.brtservice.service.GeneratorService;
@@ -22,18 +29,38 @@ public class BrtController {
     HrsClient hrsClient;
     GeneratorService generatorService;
 
-    @GetMapping("/pay")
-    public void pay() throws Exception {
-        clientService.addMoney("73734435247", 124);
+    @PatchMapping(value = "/pay", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public MoneyDto pay(
+            @RequestBody PayRequest payRequest) throws Exception {
+        return clientService.addMoney(payRequest);
     }
 
-    @GetMapping("/billing")
-    public String billing() throws IOException {
+    @GetMapping("report/{numberPhone}")
+    public ReportDto report(
+            @PathVariable String numberPhone) throws Exception {
+        return clientService.report(numberPhone);
+    }
+
+    @PatchMapping(value = "/changeTariff", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ClientTariffDto changeTariff(
+            @RequestBody ChangeTariffRequest changeTariffRequest) throws Exception {
+        return clientService.changeTariff(changeTariffRequest);
+    }
+
+    @PostMapping(value = "/abonent", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ClientDto createClient(
+            @RequestBody CreateClientRequest createClientRequest) throws Exception {
+        return clientService.createClient(createClientRequest);
+    }
+
+    @PatchMapping(value = "/billing", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public List<BillingDto> billing(
+            @RequestBody BillingRequest billingRequest) throws IOException {
         Resource resource = cdrClient.random();
         generatorService.generateCdrPlus(resource);
         List<BillingResponse> billingResponse = hrsClient.calculateCost();
-        clientService.billing(billingResponse);
-        return "result";
+
+        return clientService.billing(billingResponse);
     }
 
     @GetMapping("/cdrPlus")
@@ -45,8 +72,7 @@ public class BrtController {
             inputStream.read(buffer);
         }
 
-        Resource resource = new ByteArrayResource(buffer);
-        return resource;
+        return new ByteArrayResource(buffer);
     }
 
 }
