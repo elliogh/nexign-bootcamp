@@ -130,7 +130,10 @@ public class ClientServiceImpl implements ClientService {
     }
 
     private void clear(List<Client> clients) {
-        clients.forEach(client -> client.setPayload(new ArrayList<>()));
+        clients.forEach(client -> {
+            client.setPayload(new ArrayList<>());
+            client.setTotalCost(0);
+        });
         clientRepository.saveAll(clients);
     }
 }
