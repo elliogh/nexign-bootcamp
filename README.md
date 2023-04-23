@@ -210,4 +210,4 @@ Response Body:
 ```
 
 ## Порядок запуска сервисов
-`eureka-server` -> `cdr-generator-service` -> `hrs-service` -> `brt-service` -> `crm-service` -> `api-gateway`
+`eureka-server` -> `cdr-generator-service` -> `hrs-service` -> `brt-service` -> `crm-service`
