@@ -8,11 +8,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="hrs-service" />
-        <module name="crm-service" />
-        <module name="brt-service" />
-        <module name="api-gateway" />
         <module name="cdr-generator-service" />
         <module name="eureka-server" />
+        <module name="crm-service" />
+        <module name="brt-service" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
