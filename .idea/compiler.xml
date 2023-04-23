@@ -15,14 +15,6 @@
         <module name="brt-service" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="api-gateway" target="11" />
-      <module name="brt-service" target="11" />
-      <module name="cdr-generator-service" target="11" />
-      <module name="crm-service" target="11" />
-      <module name="eureka-server" target="11" />
-      <module name="hrs-service" target="11" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
