@@ -211,3 +211,6 @@ Response Body:
 
 ## Порядок запуска сервисов
 `eureka-server` -> `cdr-generator-service` -> `hrs-service` -> `brt-service` -> `crm-service`
+
+### Swagger документация доступна по адресу:
+`localhost:8090/swagger-ui/index.html`
