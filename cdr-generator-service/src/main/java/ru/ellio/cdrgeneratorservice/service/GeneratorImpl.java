@@ -46,10 +46,6 @@ public class GeneratorImpl implements Generator {
                 LocalDateTime endDateTime = startDateTime
                         .plusMinutes(random.nextInt(30))
                         .plusSeconds(random.nextInt(60));
-                String callType = possibleTypes.get(random.nextInt(2));
-                cdr.append(callType).append(",").append(phone)
-                        .append(",").append(startDateTime.format(dateFormat))
-                        .append(",").append(endDateTime.format(dateFormat)).append("\n");
 
                 for (int i = 1; i < 10; i++) {
                     startDateTime = startDateTime.plusDays(random.nextInt(30))
@@ -60,6 +56,10 @@ public class GeneratorImpl implements Generator {
                     endDateTime = startDateTime
                             .plusMinutes(random.nextInt(30))
                             .plusSeconds(random.nextInt(60));
+                    String callType = possibleTypes.get(random.nextInt(2));
+                    cdr.append(callType).append(",").append(phone)
+                            .append(",").append(startDateTime.format(dateFormat))
+                            .append(",").append(endDateTime.format(dateFormat)).append("\n");
                     cdr.append(callType).append(",").append(phone)
                             .append(",").append(startDateTime.format(dateFormat))
                             .append(",").append(endDateTime.format(dateFormat))
