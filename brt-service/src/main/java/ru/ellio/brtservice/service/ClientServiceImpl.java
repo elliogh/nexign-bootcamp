@@ -3,6 +3,9 @@ package ru.ellio.brtservice.service;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.ellio.brtservice.dto.*;
+import ru.ellio.brtservice.exception.ClientExistsException;
+import ru.ellio.brtservice.exception.ClientNotFoundException;
+import ru.ellio.brtservice.exception.TariffNotFoundException;
 import ru.ellio.brtservice.request.ChangeTariffRequest;
 import ru.ellio.brtservice.request.CreateClientRequest;
 import ru.ellio.brtservice.request.PayRequest;
@@ -13,7 +16,6 @@ import ru.ellio.brtservice.model.Tariff;
 import ru.ellio.brtservice.repository.ClientRepository;
 import ru.ellio.brtservice.repository.TariffRepository;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,13 +37,13 @@ public class ClientServiceImpl implements ClientService {
      *
      * @param payRequest запрос на пополенние баланса
      * @return ответ на пополнение баланса
-     * @throws Exception абонент не найден
+     * @throws ClientNotFoundException абонент не найден
      */
     @Override
-    public MoneyDto addMoney(PayRequest payRequest) throws Exception {
+    public MoneyDto addMoney(PayRequest payRequest) throws ClientNotFoundException {
         Client client = clientRepository
                 .findClientByNumberPhone(payRequest.getNumberPhone())
-                .orElseThrow(() -> new Exception("Такого абонента нет"));
+                .orElseThrow(() -> new ClientNotFoundException(payRequest.getNumberPhone()));
         client.setBalance(client.getBalance() + payRequest.getMoney());
         clientRepository.save(client);
         return mapper.toMoneyDto(client);
@@ -52,13 +54,13 @@ public class ClientServiceImpl implements ClientService {
      *
      * @param numberPhone номер телефона абонента
      * @return отчет
-     * @throws Exception абонент не найден
+     * @throws ClientNotFoundException абонент не найден
      */
     @Override
-    public ReportDto report(String numberPhone) throws Exception {
+    public ReportDto report(String numberPhone) throws ClientNotFoundException {
         Client client = clientRepository
                 .findClientByNumberPhone(numberPhone)
-                .orElseThrow(() -> new Exception("Такого абонента нет"));
+                .orElseThrow(() -> new ClientNotFoundException(numberPhone));
         return mapper.toReportDto(client);
     }
 
@@ -67,16 +69,18 @@ public class ClientServiceImpl implements ClientService {
      *
      * @param changeTariffRequest запрос на смену тарифа абонента
      * @return ответ на смену тарифа
-     * @throws Exception тариф не найден, абонент не найден
+     * @throws TariffNotFoundException тариф не найден
+     * @throws ClientNotFoundException абонент не найден
      */
     @Override
-    public ClientTariffDto changeTariff(ChangeTariffRequest changeTariffRequest) throws Exception {
+    public ClientTariffDto changeTariff(
+            ChangeTariffRequest changeTariffRequest) throws TariffNotFoundException, ClientNotFoundException {
         Tariff tariff = tariffRepository
                 .findAllByTariffId(changeTariffRequest.getTariff_id())
-                .orElseThrow(() -> new Exception("Такого тарифа нет"));
+                .orElseThrow(() -> new TariffNotFoundException(changeTariffRequest.getTariff_id()));
         Client client = clientRepository
                 .findClientByNumberPhone(changeTariffRequest.getNumberPhone())
-                .orElseThrow(() -> new Exception("Такого абонента нет"));
+                .orElseThrow(() -> new ClientNotFoundException(changeTariffRequest.getNumberPhone()));
         client.setTariff(tariff);
         clientRepository.save(client);
         return mapper.toClientTariffDto(client);
@@ -87,15 +91,17 @@ public class ClientServiceImpl implements ClientService {
      *
      * @param createClientRequest запрос на создание нового абонента.
      * @return ответ на созадние нового абонента
-     * @throws Exception абонент с таким телефоном существует, тариф не найден
+     * @throws ClientExistsException абонент с таким телефоном существует
+     * @throws TariffNotFoundException тариф не найден
      */
     @Override
-    public ClientDto createClient(CreateClientRequest createClientRequest) throws Exception {
+    public ClientDto createClient(
+            CreateClientRequest createClientRequest) throws ClientExistsException, TariffNotFoundException {
         boolean isClient = clientRepository.findClientByNumberPhone(createClientRequest.getNumberPhone()).isPresent();
-        if (isClient) throw new Exception("Абонент с таким телефоном существует");
+        if (isClient) throw new ClientExistsException(createClientRequest.getNumberPhone());
         Tariff tariff = tariffRepository
                 .findAllByTariffId(createClientRequest.getTariff_id())
-                .orElseThrow(() -> new Exception("Такого тарифа нет"));
+                .orElseThrow(() -> new TariffNotFoundException(createClientRequest.getTariff_id()));
         Client client = Client.builder()
                 .numberPhone(createClientRequest.getNumberPhone())
                 .tariff(tariff)
@@ -109,8 +115,8 @@ public class ClientServiceImpl implements ClientService {
     /**
      * Метод, который осуществляет тарификацию.
      *
+     * @param billingResponses список операций
      * @return ответ на выполнение тарификации
-     * @throws IOException ошибка генерации файла
      */
     @Override
     public BillingDto billing(List<BillingResponse> billingResponses) {
