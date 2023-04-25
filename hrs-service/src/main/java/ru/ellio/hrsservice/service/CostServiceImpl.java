@@ -39,7 +39,7 @@ public class CostServiceImpl implements CostService {
                 String callType = operation.getCallType();
                 long durationInSeconds = Duration.between(operation.getStartTime(), operation.getEndTime()).toSeconds();
                 long durationInMinutes = (Duration.between(operation.getStartTime(), operation.getEndTime()).toSeconds()) / 60; // в минутах
-                if (durationInMinutes % 60 != 0) durationInMinutes++; // Округляем в большую сторону
+                if (durationInSeconds % 60 != 0) durationInMinutes++; // Округляем в большую сторону
 
                 double cost = 0;
 
