@@ -43,11 +43,9 @@ public class GeneratorImpl implements Generator {
             // для каждого абонента генерируем 10 рандомных звонков и записываем в файл
             for (String phone : possiblePhoneNumbers) {
                 LocalDateTime startDateTime = LocalDateTime.of(2022, 1, 1, 1, 15, 10);
-                LocalDateTime endDateTime = startDateTime
-                        .plusMinutes(random.nextInt(30))
-                        .plusSeconds(random.nextInt(60));
+                LocalDateTime endDateTime = startDateTime;
 
-                for (int i = 1; i < 10; i++) {
+                for (int i = 0; i < 10; i++) {
                     startDateTime = startDateTime.plusDays(random.nextInt(30))
                             .plusMonths(random.nextInt(1))
                             .plusHours(random.nextInt(12))
