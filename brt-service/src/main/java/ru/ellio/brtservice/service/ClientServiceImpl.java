@@ -1,6 +1,7 @@
 package ru.ellio.brtservice.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.ellio.brtservice.dto.*;
 import ru.ellio.brtservice.exception.ClientExistsException;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 /**
  * Сервис для работы с абонентами.
  */
+@Slf4j
 @AllArgsConstructor
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -46,6 +48,7 @@ public class ClientServiceImpl implements ClientService {
                 .orElseThrow(() -> new ClientNotFoundException(payRequest.getNumberPhone()));
         client.setBalance(client.getBalance() + payRequest.getMoney());
         clientRepository.save(client);
+        log.info("Balance of client with numberPhone: {} was changed to {}", client.getNumberPhone(), client.getBalance());
         return mapper.toMoneyDto(client);
     }
 
@@ -83,6 +86,7 @@ public class ClientServiceImpl implements ClientService {
                 .orElseThrow(() -> new ClientNotFoundException(changeTariffRequest.getNumberPhone()));
         client.setTariff(tariff);
         clientRepository.save(client);
+        log.info("Tariff of client with numberPhone: {} was changed to {}", client.getNumberPhone(), client.getTariff().getTariffId());
         return mapper.toClientTariffDto(client);
     }
 
@@ -109,6 +113,7 @@ public class ClientServiceImpl implements ClientService {
                 .monetaryUnit("rubles")
                 .build();
         clientRepository.save(client);
+        log.info("Client with numberPhone: {} was created", client.getNumberPhone());
         return mapper.toClientDto(client);
     }
 

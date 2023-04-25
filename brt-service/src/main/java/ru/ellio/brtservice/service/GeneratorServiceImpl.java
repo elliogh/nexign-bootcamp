@@ -1,6 +1,7 @@
 package ru.ellio.brtservice.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import ru.ellio.brtservice.model.Client;
@@ -8,7 +9,6 @@ import ru.ellio.brtservice.model.Tariff;
 import ru.ellio.brtservice.repository.ClientRepository;
 
 import java.io.*;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.function.Function;
@@ -17,13 +17,15 @@ import java.util.stream.Collectors;
 /**
  * Сервис для генерации CDR+ с тарифом.
  */
-@Service
+@Slf4j
 @AllArgsConstructor
+@Service
 public class GeneratorServiceImpl implements GeneratorService {
     ClientRepository clientRepository;
 
     /**
      * Метод, который генерирует CDR+ на основе CDR.
+     *
      * @param resource CDR
      * @return CDR+
      * @throws IOException проблемы с файлом
@@ -57,6 +59,7 @@ public class GeneratorServiceImpl implements GeneratorService {
                 "cdrPlus/cdrPlus.txt"))) {
             writer.write(cdrPlus.toString());
         }
+        log.info("File cdrPlus was created");
         return new File(String.format("%s/cdrPlus%s", "cdrPlus", ".txt"));
     }
 
