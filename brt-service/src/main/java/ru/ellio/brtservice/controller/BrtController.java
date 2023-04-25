@@ -8,6 +8,9 @@ import org.springframework.core.io.Resource;
 import ru.ellio.brtservice.clients.CdrClient;
 import ru.ellio.brtservice.clients.HrsClient;
 import ru.ellio.brtservice.dto.*;
+import ru.ellio.brtservice.exception.ClientExistsException;
+import ru.ellio.brtservice.exception.ClientNotFoundException;
+import ru.ellio.brtservice.exception.TariffNotFoundException;
 import ru.ellio.brtservice.request.ChangeTariffRequest;
 import ru.ellio.brtservice.request.CreateClientRequest;
 import ru.ellio.brtservice.request.PayRequest;
@@ -32,13 +35,13 @@ public class BrtController {
      *
      * @param payRequest запрос на пополнение баланса
      * @return ответ на пополнение баланса
-     * @throws Exception абонент не найден
+     * @throws ClientNotFoundException абонент не найден
      * @see PayRequest
      * @see MoneyDto
      */
     @PatchMapping(value = "/pay", consumes = MediaType.APPLICATION_JSON_VALUE)
     public MoneyDto pay(
-            @RequestBody PayRequest payRequest) throws Exception {
+            @RequestBody PayRequest payRequest) throws ClientNotFoundException {
         return clientService.addMoney(payRequest);
     }
 
@@ -47,12 +50,12 @@ public class BrtController {
      *
      * @param numberPhone номер телефона абонента
      * @return отчет
-     * @throws Exception абонент не найден
+     * @throws ClientNotFoundException абонент не найден
      * @see ReportDto
      */
     @GetMapping("report/{numberPhone}")
     public ReportDto report(
-            @PathVariable String numberPhone) throws Exception {
+            @PathVariable String numberPhone) throws ClientNotFoundException {
         return clientService.report(numberPhone);
     }
 
@@ -61,13 +64,14 @@ public class BrtController {
      *
      * @param changeTariffRequest запрос на смену тарифа абонента
      * @return ответ на смену тарифа
-     * @throws Exception тариф не найден, абонент не найден
+     * @throws TariffNotFoundException тариф не найден
+     * @throws ClientNotFoundException абонент не найден
      * @see ChangeTariffRequest
      * @see ClientTariffDto
      */
     @PatchMapping(value = "/changeTariff", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ClientTariffDto changeTariff(
-            @RequestBody ChangeTariffRequest changeTariffRequest) throws Exception {
+            @RequestBody ChangeTariffRequest changeTariffRequest) throws TariffNotFoundException, ClientNotFoundException {
         return clientService.changeTariff(changeTariffRequest);
     }
 
@@ -76,13 +80,14 @@ public class BrtController {
      *
      * @param createClientRequest запрос на создание нового абонента.
      * @return ответ на созадние нового абонента
-     * @throws Exception абонент с таким телефоном существует, тариф не найден
+     * @throws ClientExistsException абонент с таким телефоном существует
+     * @throws TariffNotFoundException тариф не найден
      * @see CreateClientRequest
      * @see ClientDto
      */
     @PostMapping(value = "/abonent", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ClientDto createClient(
-            @RequestBody CreateClientRequest createClientRequest) throws Exception {
+            @RequestBody CreateClientRequest createClientRequest) throws ClientExistsException, TariffNotFoundException {
         return clientService.createClient(createClientRequest);
     }
 
