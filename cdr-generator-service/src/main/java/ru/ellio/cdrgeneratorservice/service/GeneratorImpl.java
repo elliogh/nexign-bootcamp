@@ -60,10 +60,6 @@ public class GeneratorImpl implements Generator {
                     cdr.append(callType).append(",").append(phone)
                             .append(",").append(startDateTime.format(dateFormat))
                             .append(",").append(endDateTime.format(dateFormat)).append("\n");
-                    cdr.append(callType).append(",").append(phone)
-                            .append(",").append(startDateTime.format(dateFormat))
-                            .append(",").append(endDateTime.format(dateFormat))
-                            .append("\n");
                 }
             }
             writer.write(cdr.toString());
