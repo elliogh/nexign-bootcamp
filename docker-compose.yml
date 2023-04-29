@@ -1,0 +1,51 @@
+version: "3.9"
+services:
+  eureka-server:
+    image: eureka-server:latest
+    ports:
+      - "8761:8761"
+  cdr-generator-service:
+    image: cdr-generator-service:latest
+    depends_on:
+      - eureka-server
+    ports:
+      - "8084:8084"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-server:8761/eureka"
+  hrs-service:
+    image: hrs-service:latest
+    depends_on:
+      - cdr-generator-service
+    ports:
+      - "8086:8086"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-server:8761/eureka"
+  brt-service:
+    image: brt-service:latest
+    depends_on:
+      - db
+      - hrs-service
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://db:5432/brt_db"
+      SPRING_DATASOURCE_USERNAME: "admin"
+      SPRING_DATASOURCE_PASSWORD: "admin"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-server:8761/eureka"
+  crm-service:
+    image: crm-service:latest
+    depends_on:
+      - brt-service
+    ports:
+      - "8090:8090"
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eureka-server:8761/eureka"
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "admin"
+      POSTGRES_DB: "brt_db"
+    ports:
+      - "5432:5432"

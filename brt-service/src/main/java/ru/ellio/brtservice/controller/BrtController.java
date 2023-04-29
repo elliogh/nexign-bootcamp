@@ -1,6 +1,6 @@
 package ru.ellio.brtservice.controller;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +21,15 @@ import ru.ellio.brtservice.service.GeneratorService;
 import java.io.*;
 import java.util.List;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/brt")
 public class BrtController {
-    ClientService clientService;
-    CdrClient cdrClient;
-    HrsClient hrsClient;
-    GeneratorService generatorService;
+    private final ClientService clientService;
+    private final CdrClient cdrClient;
+    private final HrsClient hrsClient;
+    private final GeneratorService generatorService;
+    private boolean needBilling = true;
 
     /**
      * Endpoint для пополнения баланса абонента.
@@ -42,6 +43,7 @@ public class BrtController {
     @PatchMapping(value = "/pay", consumes = MediaType.APPLICATION_JSON_VALUE)
     public MoneyDto pay(
             @RequestBody PayRequest payRequest) throws ClientNotFoundException {
+        if (needBilling) runBilling();
         return clientService.addMoney(payRequest);
     }
 
@@ -56,6 +58,7 @@ public class BrtController {
     @GetMapping("report/{numberPhone}")
     public ReportDto report(
             @PathVariable String numberPhone) throws ClientNotFoundException {
+        if (needBilling) runBilling();
         return clientService.report(numberPhone);
     }
 
@@ -72,6 +75,7 @@ public class BrtController {
     @PatchMapping(value = "/changeTariff", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ClientTariffDto changeTariff(
             @RequestBody ChangeTariffRequest changeTariffRequest) throws TariffNotFoundException, ClientNotFoundException {
+        if (needBilling) runBilling();
         return clientService.changeTariff(changeTariffRequest);
     }
 
@@ -80,7 +84,7 @@ public class BrtController {
      *
      * @param createClientRequest запрос на создание нового абонента.
      * @return ответ на созадние нового абонента
-     * @throws ClientExistsException абонент с таким телефоном существует
+     * @throws ClientExistsException   абонент с таким телефоном существует
      * @throws TariffNotFoundException тариф не найден
      * @see CreateClientRequest
      * @see ClientDto
@@ -88,6 +92,7 @@ public class BrtController {
     @PostMapping(value = "/abonent", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ClientDto createClient(
             @RequestBody CreateClientRequest createClientRequest) throws ClientExistsException, TariffNotFoundException {
+        if (needBilling) runBilling();
         return clientService.createClient(createClientRequest);
     }
 
@@ -110,6 +115,7 @@ public class BrtController {
 
     /**
      * Endpoint для получения файла CDR+ с тарифом.
+     *
      * @return файл
      * @throws IOException ошибка чтения файла
      */
@@ -125,4 +131,15 @@ public class BrtController {
         return new ByteArrayResource(buffer);
     }
 
+    private void runBilling() {
+        BillingDto result = null;
+        while (result == null) {
+            try {
+                Thread.sleep(4000);
+                result = billing();
+            } catch (Exception ignored) {
+            }
+        }
+        needBilling = false;
+    }
 }

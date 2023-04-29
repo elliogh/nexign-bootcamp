@@ -10,6 +10,7 @@
         <module name="hrs-service" />
         <module name="cdr-generator-service" />
         <module name="eureka-server" />
+        <module name="nexign-bootcamp" />
         <module name="crm-service" />
         <module name="brt-service" />
       </profile>
@@ -22,6 +23,7 @@
       <module name="crm-service" target="11" />
       <module name="eureka-server" target="11" />
       <module name="hrs-service" target="11" />
+      <module name="nexign-bootcamp" target="1.5" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">

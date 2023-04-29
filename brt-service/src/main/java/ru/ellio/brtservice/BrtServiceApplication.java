@@ -30,14 +30,4 @@ public class BrtServiceApplication {
     }
 
     // Выполнение тарификации при запуске приложения
-    @EventListener(ApplicationReadyEvent.class)
-    public void runAfterStartup() {
-        BillingDto result = null;
-        while (result == null) {
-            try {
-                Thread.sleep(4000);
-                result = brtController.billing();
-            } catch (Exception ignored) {}
-        }
-    }
 }
