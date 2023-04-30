@@ -3,7 +3,8 @@
 - Java 11
 - Maven
 - Spring (Boot, Cloud, Data, Security)
-- PostgreSQL
+- Postgres
+- Docker
 
 ## Информация о проекте
 - `eureka-server` - сервер для регистрации микросервисов Eureka
